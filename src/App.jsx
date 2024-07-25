@@ -1,79 +1,39 @@
-// import { lazy , Suspense } from "react";
-// import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
-// import './App.css'
-// const Dashboard = lazy(() => import('./components/Dashboard'))
-// const Landing = lazy(() => import('./components/Landing'))
+import { useContext, useState } from "react";
+import { CountContext } from "./context";
 
-
-// function App() {
-//   // const [count, setCount] = useState(0)
-// return (
-//     <div>
-//     <BrowserRouter>
-//     <Appbar />
-//     <Suspense fallback={<div>Loading...</div>}>
-//           <Routes>
-//             <Route path="/dashboard" element={<Dashboard />} />
-//             <Route path="/" element={<Landing />} />
-//           </Routes>
-//         </Suspense>
-//     </BrowserRouter>   
-//     </div>
-//   )
-
-// }
-
-// function Appbar(){
-//   const navigate = useNavigate();
-
-//   return <div>
-//     <div>
-//         <button onClick={() => {
-//           navigate("/")
-//         }}>Landing page</button>
-
-//         <button onClick={() => {
-//           navigate("/dashboard");
-//         }}>Dashboard</button>  
-//       </div>   
-//   </div>
-// }
-
-// export default App
- 
-import { useState } from "react";
-
-function App(){
-
+function App() {
   const [count, setCount] = useState(0);
-
   return (
     <div>
-       <Count count={count} />
-
-       <Buttons count={count} setCount={setCount}/>
+      <CountContext.Provider value={{ count, setCount }}>
+        <Count />
+      </CountContext.Provider>
     </div>
-  )
+  );
 }
 
-function Count({count}){
-  return <div>
-    {count}
-  </div>
+function Count() {
+  return (
+    <div>
+      <CountRenderer />
+      <Buttons />
+    </div>
+  );
 }
 
-function Buttons({count , setCount}){
- return <div>
-  <button onClick={() => {
-    setCount(count + 1)
-  }}>Increase</button>
-
-
-  <button onClick={() => {
-    setCount(count - 1)
-  }}>decrease</button>
- </div>
-
+function CountRenderer() {
+  const { count } = useContext(CountContext);
+  return <div>{count}</div>;
 }
 
-export default App
+function Buttons() {
+  const { count, setCount } = useContext(CountContext);
+  return (
+    <div>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+      <button onClick={() => setCount(count - 1)}>Decrease</button>
+    </div>
+  );
+}
+
+export default App;
